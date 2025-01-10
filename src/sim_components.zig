@@ -56,9 +56,11 @@ pub const Branch = enum {
 
 pub const Robot = struct {
     pub const Stat = enum {
+        autonomy,
         agility,
         speed,
         drivability,
+        steadiness,
         durability,
         climbing,
         accuracy,
@@ -72,11 +74,22 @@ pub const Robot = struct {
 };
 
 pub const Module = struct {
+    pub const Type = union(enum) {
+        drive_base: struct { software_req: u8 },
+        shooter: struct {},
+        intake: struct {},
+        climber: struct {},
+        other: struct {},
+    };
+
     name: [name_max_length]u8,
     cost: Cost,
     branch: Branch,
     branch_point_cost: BranchPoint,
     branch_work_cost: WorkUnit,
+    stats: std.EnumMap(Robot.Stat, u8),
+    type: Type,
+    dependencies: std.ArrayList(*Module),
 };
 
 pub const CompRoles = enum {
